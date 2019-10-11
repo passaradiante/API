@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Models;
@@ -22,86 +21,89 @@ namespace WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/Usuario
+        //Obter Usuarios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsuarioDominio>>> GetUsuarios()
-        {
-            return await _context.Usuarios.ToListAsync();
-        }
+        public async Task<ActionResult<IEnumerable<UsuarioDominio>>> ObterUsuarios() => await _context.Usuarios.ToListAsync();
 
-        // GET: api/Usuario/5
+        //Buscar por ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<UsuarioDominio>> GetUsuario(int id)
+        public async Task<ActionResult<UsuarioDominio>> BuscarUsuarioId(int id)
         {
-            var usuarioDominio = await _context.Usuarios.FindAsync(id);
+            var validacao = new { transacao = "Reprovada", mensagem = "Usuario não encontrado" };
 
+            var usuarioDominio = await _context.Usuarios.FindAsync(id);
             if (usuarioDominio == null)
-            {
-                return NotFound();
-            }
+                return StatusCode(404, validacao);
 
             return usuarioDominio;
         }
 
-        // PUT: api/Usuario/5
+        //Atualizar dados de um usuário
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(int id, UsuarioDominio usuarioDominio)
+        public async Task<IActionResult> AtualizarUsuario(int id, UsuarioDominio usuario)
         {
-            if (id != usuarioDominio.id)
-            {
-                return BadRequest();
-            }
+            var validacao = new { transacao = "Reprovada", mensagem = "Usuario não encontrado" };
+            var response = new { transacao = "Aprovada", mensagem = "Usuario atualizado com sucesso" };
 
-            _context.Entry(usuarioDominio).State = EntityState.Modified;
+            if (!ExisteUsuario(id))
+                return StatusCode(404, validacao);
+
+            _context.Entry(usuario).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
+                return StatusCode(200, response);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UsuarioExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                throw;
 
-            return NoContent();
+            }
         }
 
-        // POST: api/Usuario
+        //Adicionar um novo usuário
         [HttpPost]
-        public async Task<ActionResult<UsuarioDominio>> PostUsuario(UsuarioDominio usuarioDominio)
+        public async Task<ActionResult<UsuarioDominio>> AdicionarUsuario(UsuarioDominio usuario)
         {
-            _context.Usuarios.Add(usuarioDominio);
+            var validacao = new { transacao = "Reprovada", mensagem = "E-mail já cadastrado" };
+            var response = new { transacao = "Aprovada", mensagem = "Usuario cadastrado com sucesso" };
+
+            if (ExisteEmailUsuario(usuario))
+                return StatusCode(500, validacao);
+
+            _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUsuarioDominio", new { id = usuarioDominio.id }, usuarioDominio);
+            return StatusCode(200, response);
         }
 
-        // DELETE: api/Usuario/5
+        //Deletar um usuário
         [HttpDelete("{id}")]
-        public async Task<ActionResult<UsuarioDominio>> DeleteUsuario(int id)
+        public async Task<ActionResult<UsuarioDominio>> DeletarUsuario(int id)
         {
-            var usuarioDominio = await _context.Usuarios.FindAsync(id);
-            if (usuarioDominio == null)
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null)
             {
                 return NotFound();
             }
 
-            _context.Usuarios.Remove(usuarioDominio);
+            _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
 
-            return usuarioDominio;
+            return usuario;
         }
 
-        private bool UsuarioExists(int id)
+        //Verificar se o usuário existe
+        private bool ExisteUsuario(int id)
         {
             return _context.Usuarios.Any(e => e.id == id);
+        }
+
+        //Verificar se o e-mail do usuário existe
+        private bool ExisteEmailUsuario(UsuarioDominio usuario)
+        {
+            return _context.Usuarios.Any(e => e.email == usuario.email);
         }
     }
 }

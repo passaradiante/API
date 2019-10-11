@@ -50,9 +50,11 @@ namespace WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseCors(options => options.WithOrigins("http://localhost:4200")
+            app.UseCors(options => options
+            .WithOrigins("http://localhost:4200")
             .AllowAnyMethod()
-            .AllowAnyHeader());
+            .AllowAnyHeader()
+            .AllowAnyMethod());
             app.UseMvc();
         }
     }

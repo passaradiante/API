@@ -12,7 +12,6 @@ namespace WebApi
 {
     public class Program
     {
-        //A função que inicia todo o projeto
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
