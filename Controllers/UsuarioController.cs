@@ -104,6 +104,6 @@ namespace WebApi.Controllers
         private bool ExisteEmailUsuario(UsuarioDominio usuario)
         {
             return _context.Usuarios.Any(e => e.email == usuario.email);
-        } 
+        }  
     }
 }
