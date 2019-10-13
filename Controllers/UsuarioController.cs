@@ -1,109 +1,104 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using WebApi.JsonRetorno;
 using WebApi.Models;
+using WebApi.Repositorio;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuarioController : ControllerBase
+    public class UsuarioController : Controller
     {
-        private readonly UsuarioContext _context;
+        private readonly UsuarioRepositorio repositorio;
+        readonly dynamic retornoJSON = new Retorno();
 
         public UsuarioController(
-            UsuarioContext context
+            UsuarioRepositorio usuarioRepositorio
             )
         {
-            _context = context;
+            repositorio = usuarioRepositorio;
         }
 
         //Obter Usuarios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsuarioDominio>>> ObterUsuarios() => await _context.Usuarios.ToListAsync();
+        public IEnumerable<UsuarioDominio> Lista() => repositorio.ObterUsuarios();
 
         //Buscar por ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<UsuarioDominio>> BuscarUsuarioId(int id)
+        public JsonResult Buscar(int id)
         {
-            var validacao = new { transacao = "Reprovada", mensagem = "Usuario não encontrado" };
-
-            var usuarioDominio = await _context.Usuarios.FindAsync(id);
-            if (usuarioDominio == null)
-                return StatusCode(404, validacao);
-
-            return usuarioDominio;
-        }
-
-        //Atualizar dados de um usuário
-        [HttpPut("{id}")]
-        public async Task<IActionResult> AtualizarUsuario(int id, UsuarioDominio usuario)
-        {
-            var validacao = new { transacao = "Reprovada", mensagem = "Usuario não encontrado" };
-            var response = new { transacao = "Aprovada", mensagem = "Usuario atualizado com sucesso" };
-
-            if (!ExisteUsuario(id))
-                return StatusCode(404, validacao);
-
-            _context.Entry(usuario).State = EntityState.Modified;
-
-            try
+            var usuario = repositorio.UsuarioPorId(id);
+            if (usuario != null)
             {
-                await _context.SaveChangesAsync();
-                return StatusCode(200, response);
+                return Json(usuario);
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                throw;
-
+                retornoJSON.Validado = false;
+                retornoJSON.Mensagem = "Usuario não encontrado";
+                return Json(retornoJSON);
             }
         }
 
         //Adicionar um novo usuário
         [HttpPost]
-        public async Task<ActionResult<UsuarioDominio>> AdicionarUsuario(UsuarioDominio usuario)
+        public JsonResult Cadastrar(UsuarioDominio usuario)
         {
-            var validacao = new { transacao = "Reprovada", mensagem = "E-mail já cadastrado" };
-            var response = new { transacao = "Aprovada", mensagem = "Usuario cadastrado com sucesso" };
+            if (repositorio.ExisteEmailUsuario(usuario))
+            {
+                retornoJSON.Validado = false;
+                retornoJSON.Mensagem = "E-mail já cadastrado";
+                return Json(retornoJSON);
+            }
+            else
+            {
+                retornoJSON.Mensagem = "Usuario cadastrado com sucesso";
+                repositorio.CadastrarUsuario(usuario);
+                return Json(retornoJSON);
+            }
+        }
 
-            if (ExisteEmailUsuario(usuario))
-                return StatusCode(500, validacao);
+        //Atualizar dados de um usuário
+        [HttpPut("{id}")]
+        public JsonResult Atualizar(int id, UsuarioDominio usuario)
+        {
 
-            _context.Usuarios.Add(usuario);
-            await _context.SaveChangesAsync();
-
-            return StatusCode(200, response);
+            if (repositorio.ExisteUsuario(id))
+            {
+                retornoJSON.Mensagem = "Usuario atualizado com sucesso";
+                repositorio.AtualizarUsuario(usuario);
+                return Json(retornoJSON);
+            }
+            else
+            {
+                retornoJSON.Validado = false;
+                retornoJSON.Mensagem = "Usuario não encontrado";
+                return Json(retornoJSON);
+            }
         }
 
         //Deletar um usuário
         [HttpDelete("{id}")]
-        public async Task<ActionResult<UsuarioDominio>> DeletarUsuario(int id)
+        public JsonResult DeletarUsuario(int id)
         {
-            var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario == null)
+            var usuario = repositorio.UsuarioPorId(id);
+            if (usuario != null)
             {
-                return NotFound();
+                retornoJSON.Mensagem = "Usuario deletado com sucesso";
+                repositorio.DeletarUsuario(usuario);
+                return Json(retornoJSON);
             }
-
-            _context.Usuarios.Remove(usuario);
-            await _context.SaveChangesAsync();
-
-            return usuario;
+            else
+            {
+                retornoJSON.Validado = false;
+                retornoJSON.Mensagem = "Usuario não encontrado";
+                return Json(retornoJSON);
+            }
         }
 
-        //Verificar se o usuário existe
-        private bool ExisteUsuario(int id)
-        {
-            return _context.Usuarios.Any(e => e.id == id);
-        }
 
-        //Verificar se o e-mail do usuário existe
-        private bool ExisteEmailUsuario(UsuarioDominio usuario)
-        {
-            return _context.Usuarios.Any(e => e.email == usuario.email);
-        }  
     }
 }
