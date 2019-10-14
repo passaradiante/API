@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.JsonRetorno;
 using WebApi.Models;
@@ -24,6 +23,7 @@ namespace WebApi.Controllers
 
         //Obter Usuarios
         [HttpGet]
+        [EnableQuery()]
         public IEnumerable<UsuarioDominio> Lista() => repositorio.ObterUsuarios();
 
         //Buscar por ID

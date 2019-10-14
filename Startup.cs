@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,7 @@ namespace WebApi
 
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
+            services.AddOData();
 
             services.AddCors();
 
@@ -53,7 +55,10 @@ namespace WebApi
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowAnyMethod());
-            app.UseMvc();
+            app.UseMvc(routeBuilder => {
+                routeBuilder.EnableDependencyInjection();
+                routeBuilder.Expand().Select().Count().OrderBy();
+            }) ;
         }
     }
 }
