@@ -38,7 +38,7 @@ namespace WebApi.Controllers
             else
             {
                 retornoJSON.Validado = false;
-                retornoJSON.Mensagem = "Usuario não encontrado";
+                retornoJSON.Mensagem = "Usuario não encontrado.";
                 return Json(retornoJSON);
             }
         }
@@ -50,12 +50,12 @@ namespace WebApi.Controllers
             if (repositorio.ExisteEmailUsuario(usuario))
             {
                 retornoJSON.Validado = false;
-                retornoJSON.Mensagem = "E-mail já cadastrado";
+                retornoJSON.Mensagem = "E-mail já cadastrado.";
                 return Json(retornoJSON);
             }
             else
             {
-                retornoJSON.Mensagem = "Usuario cadastrado com sucesso";
+                retornoJSON.Mensagem = "Cadastrado realizado com sucesso.";
                 repositorio.CadastrarUsuario(usuario);
                 return Json(retornoJSON);
             }
@@ -68,14 +68,14 @@ namespace WebApi.Controllers
 
             if (repositorio.ExisteUsuario(id))
             {
-                retornoJSON.Mensagem = "Usuario atualizado com sucesso";
+                retornoJSON.Mensagem = "Usuario atualizado com sucesso.";
                 repositorio.AtualizarUsuario(usuario);
                 return Json(retornoJSON);
             }
             else
             {
                 retornoJSON.Validado = false;
-                retornoJSON.Mensagem = "Usuario não encontrado";
+                retornoJSON.Mensagem = "Usuario não encontrado.";
                 return Json(retornoJSON);
             }
         }
@@ -87,14 +87,14 @@ namespace WebApi.Controllers
             var usuario = repositorio.UsuarioPorId(id);
             if (usuario != null)
             {
-                retornoJSON.Mensagem = "Usuario deletado com sucesso";
+                retornoJSON.Mensagem = "Usuario deletado.";
                 repositorio.DeletarUsuario(usuario);
                 return Json(retornoJSON);
             }
             else
             {
                 retornoJSON.Validado = false;
-                retornoJSON.Mensagem = "Usuario não encontrado";
+                retornoJSON.Mensagem = "Usuario não encontrado.";
                 return Json(retornoJSON);
             }
         }
