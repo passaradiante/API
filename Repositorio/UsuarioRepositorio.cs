@@ -7,45 +7,45 @@ namespace WebApi.Repositorio
 {
     public class UsuarioRepositorio
     {
-        private readonly DatabaseContext _context;
+        //private readonly DatabaseContext _context;
 
-        public UsuarioRepositorio(DatabaseContext context)
-        {
-            _context = context;
-        }
+        //public UsuarioRepositorio(DatabaseContext context)
+        //{
+        //    _context = context;
+        //}
 
-        public IEnumerable<UsuarioDominio> ObterUsuarios()
-        {
-            return _context.Usuarios;
-        }
+        //public IEnumerable<Usuario> ObterUsuarios()
+        //{
+        //    return _context.Usuarios;
+        //}
 
-        public void CadastrarUsuario(UsuarioDominio usuario)
-        {
-            _context.Usuarios.Add(usuario);
-            _context.SaveChanges();
-        }
+        //public void CadastrarUsuario(Usuario usuario)
+        //{
+        //    _context.Usuarios.Add(usuario);
+        //    _context.SaveChanges();
+        //}
 
-        public void AtualizarUsuario(UsuarioDominio usuario)
-        {
-            _context.Entry(usuario).State = EntityState.Modified;
-            _context.SaveChanges();
-        }
+        //public void AtualizarUsuario(Usuario usuario)
+        //{
+        //    _context.Entry(usuario).State = EntityState.Modified;
+        //    _context.SaveChanges();
+        //}
 
-        public UsuarioDominio UsuarioPorId(int id)
-        {
-            var usuarioId = _context.Usuarios.Find(id);
-            return usuarioId;
-        }
+        //public Usuario UsuarioPorId(int id)
+        //{
+        //    var usuarioId = _context.Usuarios.Find(id);
+        //    return usuarioId;
+        //}
 
-        public void DeletarUsuario(UsuarioDominio usuario)
-        {
-            _context.Usuarios.Remove(usuario);
-            _context.SaveChanges();
-        }
+        //public void DeletarUsuario(Usuario usuario)
+        //{
+        //    _context.Usuarios.Remove(usuario);
+        //    _context.SaveChanges();
+        //}
 
-        public bool ExisteUsuario(int id) => _context.Usuarios.Any(e => e.id == id) ? true : false;
+        //public bool ExisteUsuario(int id) => _context.Usuarios.Any(e => e.Id == id) ? true : false;
 
-        public bool ExisteEmailUsuario(UsuarioDominio usuario) => _context.Usuarios.Any(e => e.email == usuario.email) ? true : false;
+        //public bool ExisteEmailUsuario(Usuario usuario) => _context.Usuarios.Any(e => e.Email == usuario.Email) ? true : false;
 
     }
 

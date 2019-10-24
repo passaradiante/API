@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -35,10 +36,19 @@ namespace WebApi
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
             services.AddOData();
-
             services.AddCors();
+            services.AddDefaultIdentity<UsuarioIdentity>()
+                .AddEntityFrameworkStores<DatabaseContext>();
 
-            // Uma nova instância é fornecida sempre que uma instância de serviço é solicitada
+            services.Configure<IdentityOptions>(options => {
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+            });
+
+
+
             #region
             services.AddTransient<UsuarioRepositorio, UsuarioRepositorio>();
             #endregion
@@ -59,6 +69,8 @@ namespace WebApi
                 routeBuilder.EnableDependencyInjection();
                 routeBuilder.Expand().Select().Count().OrderBy();
             }) ;
+
+            app.UseAuthentication();
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNet.OData;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 using WebApi.JsonRetorno;
 using WebApi.Models;
-using WebApi.Repositorio;
 
 namespace WebApi.Controllers
 {
@@ -11,94 +11,55 @@ namespace WebApi.Controllers
     [ApiController]
     public class UsuarioController : Controller
     {
-        private readonly UsuarioRepositorio repositorio;
+
         readonly dynamic retornoJSON = new Retorno();
 
-        public UsuarioController(
-            UsuarioRepositorio usuarioRepositorio
-            )
+        private UserManager<UsuarioIdentity> _userManager;
+        private SignInManager<UsuarioIdentity> _signInManager;
+
+        public UsuarioController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager)
         {
-            repositorio = usuarioRepositorio;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
-        //Obter Usuarios
-        [HttpGet]
-        [EnableQuery()]
-        public IEnumerable<UsuarioDominio> Lista() => repositorio.ObterUsuarios();
-
-        //Buscar por ID
-        [HttpGet("{id}")]
-        public JsonResult Buscar(int id)
-        {
-            var usuario = repositorio.UsuarioPorId(id);
-            if (usuario != null)
-            {
-                return Json(usuario);
-            }
-            else
-            {
-                retornoJSON.Validado = false;
-                retornoJSON.Mensagem = "Usuario não encontrado.";
-                return Json(retornoJSON);
-            }
-        }
-
-        //Adicionar um novo usuário
         [HttpPost]
-        public JsonResult Cadastrar(UsuarioDominio usuario)
+        [Route("Cadastrar")]
+        public async Task<Object> Cadastrar(UsuarioIdentityModel request)
         {
-            if (repositorio.ExisteEmailUsuario(usuario))
+            var novoUsuario = new UsuarioIdentity()
             {
-                retornoJSON.Validado = false;
-                retornoJSON.Mensagem = "E-mail já cadastrado.";
+                UserName = request.UserName,
+                Email = request.Email,
+                FullName = request.FullName
+            };
+
+            var isUniqueEmail = (await _userManager.FindByEmailAsync(request.Email) == null);
+            var isUniqueUserName = (await _userManager.FindByNameAsync(request.UserName) == null);
+
+            if (!isUniqueEmail && !isUniqueUserName)
+            {
+                retornoJSON.Validado = true;
+                retornoJSON.Mensagem = "Login ou Email já cadastrado!";
                 return Json(retornoJSON);
             }
-            else
+
+            try
             {
-                retornoJSON.Mensagem = "Cadastrado realizado com sucesso.";
-                repositorio.CadastrarUsuario(usuario);
-                return Json(retornoJSON);
+                var result = await _userManager.CreateAsync(novoUsuario, request.Password);
+                if (result.Succeeded)
+                {
+                    retornoJSON.Validado = true;
+                    retornoJSON.Mensagem = "Usuario cadastrado";
+                    return Json(retornoJSON);
+                }
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
-
-        //Atualizar dados de um usuário
-        [HttpPut("{id}")]
-        public JsonResult Atualizar(int id, UsuarioDominio usuario)
-        {
-
-            if (repositorio.ExisteUsuario(id))
-            {
-                retornoJSON.Mensagem = "Usuario atualizado com sucesso.";
-                repositorio.AtualizarUsuario(usuario);
-                return Json(retornoJSON);
-            }
-            else
-            {
-                retornoJSON.Validado = false;
-                retornoJSON.Mensagem = "Usuario não encontrado.";
-                return Json(retornoJSON);
-            }
-        }
-
-        //Deletar um usuário
-        [HttpDelete("{id}")]
-        public JsonResult DeletarUsuario(int id)
-        {
-            var usuario = repositorio.UsuarioPorId(id);
-            if (usuario != null)
-            {
-                retornoJSON.Mensagem = "Usuario deletado.";
-                repositorio.DeletarUsuario(usuario);
-                return Json(retornoJSON);
-            }
-            else
-            {
-                retornoJSON.Validado = false;
-                retornoJSON.Mensagem = "Usuario não encontrado.";
-                return Json(retornoJSON);
-            }
-        }
-
 
     }
 }
