@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -6,7 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
+using System;
+using System.Text;
 using WebApi.Models;
 using WebApi.Repositorio;
 
@@ -47,6 +51,28 @@ namespace WebApi
                 options.Password.RequireUppercase = false;
             });
 
+            //Jwt Authentication
+
+            var key = Encoding.UTF8.GetBytes(Configuration["ApplicationSettings:JWT_KEY"].ToString());
+            
+            services.AddAuthentication(x => 
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer( x=> {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = false;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
 
 
             #region
@@ -56,12 +82,16 @@ namespace WebApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseAuthentication();
             app.UseCors(options => options
-            .WithOrigins("http://localhost:4200")
+            .WithOrigins(Configuration["ApplicationSettings:Client_URL"].ToString())
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowAnyMethod());
@@ -70,7 +100,7 @@ namespace WebApi
                 routeBuilder.Expand().Select().Count().OrderBy();
             }) ;
 
-            app.UseAuthentication();
+            
         }
     }
 }
