@@ -195,8 +195,6 @@ namespace WebApi.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("NomeCompleto");
-
                     b.HasDiscriminator().HasValue("UsuarioIdentity");
                 });
 

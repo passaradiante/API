@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApi.Models;
 
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20191027214131_ProdutoCategoria")]
+    partial class ProdutoCategoria
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -208,7 +210,7 @@ namespace WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CategoriaId");
+                    b.Property<int?>("CategoriaId");
 
                     b.Property<DateTime>("DataRegistro");
 
@@ -229,25 +231,6 @@ namespace WebApi.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Produtos");
-                });
-
-            modelBuilder.Entity("WebApi.Models.Servico", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Descricao");
-
-                    b.Property<string>("Nome");
-
-                    b.Property<string>("UsuarioId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("Servicos");
                 });
 
             modelBuilder.Entity("WebApi.Models.UsuarioIdentity", b =>
@@ -307,18 +290,10 @@ namespace WebApi.Migrations
             modelBuilder.Entity("WebApi.Models.Produto", b =>
                 {
                     b.HasOne("WebApi.Models.Categoria", "Categoria")
-                        .WithMany()
-                        .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("Produtos")
+                        .HasForeignKey("CategoriaId");
 
-                    b.HasOne("WebApi.Models.UsuarioIdentity", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId");
-                });
-
-            modelBuilder.Entity("WebApi.Models.Servico", b =>
-                {
-                    b.HasOne("WebApi.Models.UsuarioIdentity", "Usuario")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId");
                 });

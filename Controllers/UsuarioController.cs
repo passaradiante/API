@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,11 +23,14 @@ namespace WebApi.Controllers
 
         private UserManager<UsuarioIdentity> _userManager;
         private SignInManager<UsuarioIdentity> _signInManager;
+        private readonly ApplicationSettings _appSettings;
 
-        public UsuarioController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager)
+        public UsuarioController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager, IOptions<ApplicationSettings> appSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _appSettings = appSettings.Value;
+
         }
 
         [HttpPost]
@@ -82,12 +86,11 @@ namespace WebApi.Controllers
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                        new Claim("UsuarioID",usuario.Id.ToString(),
-                                   "Nome:", usuario.FullName.ToString())
+                        new Claim("UsuarioID",usuario.Id.ToString())
                     }),
                     Expires = DateTime.UtcNow.AddDays(1),
                     SigningCredentials = new SigningCredentials(
-                       new SymmetricSecurityKey(Encoding.UTF8.GetBytes("85b3e97914563208")),
+                       new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JWT_KEY)),
                         SecurityAlgorithms.HmacSha256Signature)
                 };
 
@@ -117,7 +120,8 @@ namespace WebApi.Controllers
             {
                 user.FullName,
                 user.Email,
-                user.UserName
+                user.UserName,
+                user.Id
             };
 
         }

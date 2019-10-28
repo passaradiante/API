@@ -28,6 +28,7 @@ namespace WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ApplicationSettings>(Configuration.GetSection("ApplicationSettings"));
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
@@ -76,7 +77,9 @@ namespace WebApi
 
 
             #region
-            services.AddTransient<UsuarioRepositorio, UsuarioRepositorio>();
+            services.AddTransient<ProdutoRepositorio, ProdutoRepositorio> ();
+            services.AddTransient<CategoriaRepositorio, CategoriaRepositorio>();
+            services.AddTransient<ServicoRepositorio, ServicoRepositorio>();
             #endregion
         }
 
