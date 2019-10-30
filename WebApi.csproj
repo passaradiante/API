@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Infra\Migrations\" />
+    <Folder Include="Requests\Commands\Produto\Excluir\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio></VisualStudio></ProjectExtensions>

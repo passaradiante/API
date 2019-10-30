@@ -3,7 +3,10 @@ using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.JsonRetorno;
 using WebApi.Models;
+using WebApi.Requests;
 using WebApi.Repositorio;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
@@ -13,13 +16,19 @@ namespace WebApi.Controllers
     {
 
         private readonly ProdutoRepositorio repositorio;
+        private readonly CategoriaRepositorio categrepositorio;
+        private UserManager<UsuarioIdentity> _userManager;
         readonly dynamic retornoJSON = new Retorno();
 
         public ProdutoController(
-            ProdutoRepositorio produtoRepositorio
+            ProdutoRepositorio produtoRepositorio,
+            UserManager<UsuarioIdentity> userManager,
+            CategoriaRepositorio categoriaRepositorio
             )
         {
             repositorio = produtoRepositorio;
+            _userManager = userManager;
+            categrepositorio = categoriaRepositorio;
         }
 
         [HttpGet]
@@ -28,9 +37,23 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("cadastro")]
-        public JsonResult Cadastrar(Produto produto)
+        public async Task<JsonResult> CadastrarAsync(ProdutoModel request)
         {
-               var result = repositorio.AdicionarProduto(produto);
+
+            Produto produto = new Produto();
+            produto.Id = request.Id;
+            produto.Nome = request.Nome;
+            produto.Descricao = request.Descricao;
+            produto.DataRegistro = request.DataRegistro;
+            produto.Quantidade = request.Quantidade;
+            produto.Valor = request.Valor;
+            var usuario = await _userManager.FindByIdAsync(request.UsuarioID);
+            produto.Usuario = usuario;
+            var categoria = categrepositorio.CategoriaoPorId(request.CategoriaID);
+            produto.Categoria = categoria;
+
+
+            var result = repositorio.AdicionarProduto(produto);
             if (result)
             {
                 retornoJSON.Mensagem = "Produto cadastrado!";

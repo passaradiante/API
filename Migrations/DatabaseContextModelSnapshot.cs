@@ -208,7 +208,7 @@ namespace WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CategoriaId");
+                    b.Property<int?>("CategoriaId");
 
                     b.Property<DateTime>("DataRegistro");
 
@@ -308,8 +308,7 @@ namespace WebApi.Migrations
                 {
                     b.HasOne("WebApi.Models.Categoria", "Categoria")
                         .WithMany()
-                        .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CategoriaId");
 
                     b.HasOne("WebApi.Models.UsuarioIdentity", "Usuario")
                         .WithMany()
