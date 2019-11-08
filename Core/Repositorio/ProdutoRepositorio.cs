@@ -25,7 +25,7 @@ namespace WebApi.Repositorio
             _context.SaveChanges();
         }
 
-        public Produto ProdutoPorId(int id) => _context.Produtos.Find(id);
+        public Produto ProdutoPorId(int id) => _context.Produtos.Include(i => i.Usuario).SingleOrDefault(x => x.Id == id);
 
         public void DeletarProduto(Produto produto)
         {

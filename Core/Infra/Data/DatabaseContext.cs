@@ -11,10 +11,10 @@ namespace WebApi.Models
         }
 
         public DbSet<UsuarioIdentity> Usuarios { get; set; }
-
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Servico> Servicos { get; set; }
+        public DbSet<ProdutoInteresse> ProdutoInteresses { get; set; }
 
     }
 }

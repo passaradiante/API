@@ -18,28 +18,32 @@ namespace WebApi.Controllers
         private readonly ProdutoRepositorio repositorio;
         private readonly CategoriaRepositorio categrepositorio;
         private UserManager<UsuarioIdentity> _userManager;
+        private readonly ProdutoInteresseRepositorio interesserepositorio;
         readonly dynamic retornoJSON = new Retorno();
 
         public ProdutoController(
             ProdutoRepositorio produtoRepositorio,
             UserManager<UsuarioIdentity> userManager,
-            CategoriaRepositorio categoriaRepositorio
+            CategoriaRepositorio categoriaRepositorio,
+            ProdutoInteresseRepositorio interesseRepositorio
             )
         {
             repositorio = produtoRepositorio;
             _userManager = userManager;
             categrepositorio = categoriaRepositorio;
+            interesserepositorio = interesseRepositorio;
         }
 
         [HttpGet]
         [EnableQuery()]
-        public IEnumerable<Produto> Categorias() => repositorio.ObterProdutos();
+        public IEnumerable<Produto> Produtos() => repositorio.ObterProdutos();
 
         [HttpPost]
         [Route("cadastro")]
-        public async Task<JsonResult> CadastrarAsync(ProdutoModel request)
+        public async Task<JsonResult> Cadastrar(ProdutoModel request)
         {
 
+            #region Novo Produto
             Produto produto = new Produto();
             produto.Id = request.Id;
             produto.Nome = request.Nome;
@@ -51,7 +55,7 @@ namespace WebApi.Controllers
             produto.Usuario = usuario;
             var categoria = categrepositorio.CategoriaoPorId(request.CategoriaID);
             produto.Categoria = categoria;
-
+            #endregion
 
             var result = repositorio.AdicionarProduto(produto);
             if (result)
@@ -62,7 +66,7 @@ namespace WebApi.Controllers
             else
             {
                 retornoJSON.Validado = false;
-                retornoJSON.Mensagem = "Produto não cadastrado, verifique os dados do produto";
+                retornoJSON.Mensagem = "Produto não cadastrado, verifique os dados do produto.";
                 return Json(retornoJSON);
             }            
         }
@@ -104,5 +108,34 @@ namespace WebApi.Controllers
                 return Json(retornoJSON);
             }
         }
+
+        [HttpPost]
+        [Route("interesse")]
+        public JsonResult InteresseProduto(ProdutoInteresseModel request)
+        {
+            #region Registrando interesse
+            ProdutoInteresse interesse = new ProdutoInteresse();
+            var produto = repositorio.ProdutoPorId(request.ProdutoID);
+            interesse.Produto = produto;
+            interesse.Usuario = produto.Usuario;
+            #endregion
+
+            var result = interesserepositorio.AdicionarRelacao(interesse);
+
+            if (result)
+            {
+                
+                retornoJSON.Mensagem = "Até aqui deu bom!";
+                return Json(retornoJSON);
+            }
+            else
+            {
+                retornoJSON.Validado = false;
+                retornoJSON.Mensagem = "Deu ruim!";
+                return Json(retornoJSON);
+            }
+
+        }
+
     }
 }

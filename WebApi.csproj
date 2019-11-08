@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20191027235759_UsuarioIdCategoriaId.cs" />
-    <Compile Remove="Migrations\20191027235759_UsuarioIdCategoriaId.Designer.cs" />
+    <Compile Remove="Core\Migrations\20191027235759_UsuarioIdCategoriaId.cs" />
+    <Compile Remove="Core\Migrations\20191027235759_UsuarioIdCategoriaId.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,8 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infra\Migrations\" />
-    <Folder Include="Requests\Commands\Produto\Excluir\" />
+    <Folder Include="Core\Infra\Migrations\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio></VisualStudio></ProjectExtensions>

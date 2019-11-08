@@ -105,9 +105,27 @@ namespace WebApi.Controllers
                 retornoJSON.Mensagem = "Login/Senha inválidos!";
                 return Json(retornoJSON);
             }
-
-        
         }
+
+        //[HttpPut("{id}")]
+        //public async Task<JsonResult> Atualizar(int id, UsuarioIdentityModel request)
+        //{
+
+        //    var usuario = await
+
+        //    if (repositorio.ExisteProduto(id))
+        //    {
+        //        repositorio.AtualizarProduto(produto);
+        //        retornoJSON.Mensagem = "Produto atualizado!";
+        //        return Json(retornoJSON);
+        //    }
+        //    else
+        //    {
+        //        retornoJSON.Validado = false;
+        //        retornoJSON.Mensagem = "Produto não encontrado!";
+        //        return Json(retornoJSON);
+
+
 
         [HttpGet]
         [Authorize]
@@ -125,5 +143,5 @@ namespace WebApi.Controllers
             };
 
         }
-}
+    }
 }

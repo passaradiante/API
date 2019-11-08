@@ -79,7 +79,8 @@ namespace WebApi
             #region
             services.AddTransient<ProdutoRepositorio, ProdutoRepositorio> ();
             services.AddTransient<CategoriaRepositorio, CategoriaRepositorio>();
-            services.AddTransient<ServicoRepositorio, ServicoRepositorio>();
+            //services.AddTransient<ServicoRepositorio, ServicoRepositorio>();
+            services.AddTransient<ProdutoInteresseRepositorio, ProdutoInteresseRepositorio>();
             #endregion
         }
 
@@ -100,7 +101,7 @@ namespace WebApi
             .AllowAnyMethod());
             app.UseMvc(routeBuilder => {
                 routeBuilder.EnableDependencyInjection();
-                routeBuilder.Expand().Select().Count().OrderBy();
+                routeBuilder.Expand().Select().Count().OrderBy().Filter();
             }) ;
 
             
