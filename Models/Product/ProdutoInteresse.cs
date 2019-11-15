@@ -8,12 +8,11 @@ namespace WebApi.Models
     public class ProdutoInteresse
     {
         public int Id { get; set; }
-        public UsuarioIdentity Usuario { get; set; }
-
-        //public UsuarioIdentity UsuarioAnunciante { get; set; }
-
+        public UsuarioIdentity UsuarioSolicitante { get; set; }
+        public UsuarioIdentity UsuarioAnunciante { get; set; }
         public Produto Produto { get; set; }
+        public bool Lido { get; set; }
 
-        //public UsuarioIdentity UsuarioSolicitante { get; set; }
+        
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApi.Models;
 
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20191110131759_Ajuste")]
+    partial class Ajuste
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,17 +243,13 @@ namespace WebApi.Migrations
 
                     b.Property<int?>("ProdutoId");
 
-                    b.Property<string>("UsuarioAnuncianteId");
-
-                    b.Property<string>("UsuarioSolicitanteId");
+                    b.Property<string>("UsuarioId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProdutoId");
 
-                    b.HasIndex("UsuarioAnuncianteId");
-
-                    b.HasIndex("UsuarioSolicitanteId");
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("ProdutoInteresses");
                 });
@@ -346,13 +344,9 @@ namespace WebApi.Migrations
                         .WithMany()
                         .HasForeignKey("ProdutoId");
 
-                    b.HasOne("WebApi.Models.UsuarioIdentity", "UsuarioAnunciante")
+                    b.HasOne("WebApi.Models.UsuarioIdentity", "Usuario")
                         .WithMany()
-                        .HasForeignKey("UsuarioAnuncianteId");
-
-                    b.HasOne("WebApi.Models.UsuarioIdentity", "UsuarioSolicitante")
-                        .WithMany()
-                        .HasForeignKey("UsuarioSolicitanteId");
+                        .HasForeignKey("UsuarioId");
                 });
 
             modelBuilder.Entity("WebApi.Models.Servico", b =>

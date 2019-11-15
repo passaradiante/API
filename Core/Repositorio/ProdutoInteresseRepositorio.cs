@@ -26,8 +26,29 @@ namespace WebApi.Repositorio
             _context.SaveChanges();
         }
 
-        //public Categoria InteressePorId(int id) => _context.ProdutoInteresses.Find();
- 
+        
+
+        public IList<ProdutoInteresse> InteressePorAnunciante(string idAnunciante)
+        {
+            return _context.ProdutoInteresses.Include(i => i.Produto)
+                                             .Include(i => i.UsuarioSolicitante)
+                                             .Include(i => i.UsuarioAnunciante)
+                                             .Where(x => x.UsuarioAnunciante.Id == idAnunciante).ToList();
+        }
+
+        //public bool AdicionarProduto(Produto produto)
+        //{
+        //    _context.Produtos.Add(produto);
+        //    return _context.SaveChanges() == 1 ? true : false;
+        //}
+
+        public bool Lido(int id)
+        {
+            var interesse = _context.ProdutoInteresses.SingleOrDefault(x => x.Id == id);
+            interesse.Lido = true;
+            _context.Update(interesse);
+           return _context.SaveChanges() == 1 ? true : false;
+        }
     }
 
 }

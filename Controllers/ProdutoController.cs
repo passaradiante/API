@@ -51,10 +51,8 @@ namespace WebApi.Controllers
             produto.DataRegistro = request.DataRegistro;
             produto.Quantidade = request.Quantidade;
             produto.Valor = request.Valor;
-            var usuario = await _userManager.FindByIdAsync(request.UsuarioID);
-            produto.Usuario = usuario;
-            var categoria = categrepositorio.CategoriaoPorId(request.CategoriaID);
-            produto.Categoria = categoria;
+            produto.Usuario = await _userManager.FindByIdAsync(request.UsuarioID);
+            produto.Categoria = categrepositorio.CategoriaoPorId(request.CategoriaID);
             #endregion
 
             var result = repositorio.AdicionarProduto(produto);
@@ -111,13 +109,14 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("interesse")]
-        public JsonResult InteresseProduto(ProdutoInteresseModel request)
+        public async Task<JsonResult> InteresseProduto(ProdutoInteresseModel request)
         {
             #region Registrando interesse
             ProdutoInteresse interesse = new ProdutoInteresse();
             var produto = repositorio.ProdutoPorId(request.ProdutoID);
             interesse.Produto = produto;
-            interesse.Usuario = produto.Usuario;
+            interesse.UsuarioAnunciante = produto.Usuario;
+            interesse.UsuarioSolicitante = await _userManager.FindByIdAsync(request.UsuarioSolicitanteID);
             #endregion
 
             var result = interesserepositorio.AdicionarRelacao(interesse);

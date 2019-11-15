@@ -5,10 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApi.Models
 {
-    public class ProdutoInteresseModel
+    public class ProdutoInteresseLido
     {
-        public int ProdutoID { get; set; }
-
-        public string UsuarioSolicitanteID { get; set; }
+        public int idNotificacao { get; set; }
     }
 }
