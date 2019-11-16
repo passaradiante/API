@@ -8,7 +8,7 @@ namespace WebApi.Models
     public class ProdutoInteresseModel
     {
         public int ProdutoID { get; set; }
-
         public string UsuarioSolicitanteID { get; set; }
+        public int Quantidade { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApi.JsonRetorno;
@@ -13,18 +14,52 @@ namespace WebApi.Controllers
     {
 
         readonly dynamic retornoJSON = new Retorno();
-
+        private UserManager<UsuarioIdentity> _userManager;
         private readonly ProdutoInteresseRepositorio interesserepositorio;
+        private readonly ProdutoRepositorio produtorepositorio;
+        
 
-        public ProdutoInteresseController(ProdutoInteresseRepositorio interesseRepositorio)
+        public ProdutoInteresseController(ProdutoInteresseRepositorio interesseRepositorio, ProdutoRepositorio produtoRepositorio, UserManager<UsuarioIdentity> userManager)
         {
             interesserepositorio = interesseRepositorio;
+            _userManager = userManager;
+            produtorepositorio = produtoRepositorio;
         }
 
         [Route("{id}")]
         public IList<ProdutoInteresse> GetInteresses(string id)
         {
             return interesserepositorio.InteressePorAnunciante(id);
+        }
+
+
+        [HttpPost]
+        [Route("interesse")]
+        public async Task<JsonResult> InteresseProduto(ProdutoInteresseModel request)
+        {
+            #region Registrando interesse
+            ProdutoInteresse interesse = new ProdutoInteresse();
+            var produto = produtorepositorio.ProdutoPorId(request.ProdutoID);
+            interesse.Produto = produto;
+            interesse.UsuarioAnunciante = produto.Usuario;
+            interesse.UsuarioSolicitante = await _userManager.FindByIdAsync(request.UsuarioSolicitanteID);
+            if (request.Quantidade > 1) interesse.QuantidadeDesejada = request.Quantidade;
+            #endregion
+
+            var result = interesserepositorio.AdicionarRelacao(interesse);
+
+            if (result)
+            {
+                retornoJSON.Mensagem = "Até aqui deu bom!";
+                return Json(retornoJSON);
+            }
+            else
+            {
+                retornoJSON.Validado = false;
+                retornoJSON.Mensagem = "Deu ruim!";
+                return Json(retornoJSON);
+            }
+
         }
 
         [HttpPost]

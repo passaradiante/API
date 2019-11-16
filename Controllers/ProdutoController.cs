@@ -18,20 +18,17 @@ namespace WebApi.Controllers
         private readonly ProdutoRepositorio repositorio;
         private readonly CategoriaRepositorio categrepositorio;
         private UserManager<UsuarioIdentity> _userManager;
-        private readonly ProdutoInteresseRepositorio interesserepositorio;
         readonly dynamic retornoJSON = new Retorno();
 
         public ProdutoController(
             ProdutoRepositorio produtoRepositorio,
             UserManager<UsuarioIdentity> userManager,
-            CategoriaRepositorio categoriaRepositorio,
-            ProdutoInteresseRepositorio interesseRepositorio
+            CategoriaRepositorio categoriaRepositorio
             )
         {
             repositorio = produtoRepositorio;
             _userManager = userManager;
             categrepositorio = categoriaRepositorio;
-            interesserepositorio = interesseRepositorio;
         }
 
         [HttpGet]
@@ -107,34 +104,6 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("interesse")]
-        public async Task<JsonResult> InteresseProduto(ProdutoInteresseModel request)
-        {
-            #region Registrando interesse
-            ProdutoInteresse interesse = new ProdutoInteresse();
-            var produto = repositorio.ProdutoPorId(request.ProdutoID);
-            interesse.Produto = produto;
-            interesse.UsuarioAnunciante = produto.Usuario;
-            interesse.UsuarioSolicitante = await _userManager.FindByIdAsync(request.UsuarioSolicitanteID);
-            #endregion
-
-            var result = interesserepositorio.AdicionarRelacao(interesse);
-
-            if (result)
-            {
-                
-                retornoJSON.Mensagem = "Até aqui deu bom!";
-                return Json(retornoJSON);
-            }
-            else
-            {
-                retornoJSON.Validado = false;
-                retornoJSON.Mensagem = "Deu ruim!";
-                return Json(retornoJSON);
-            }
-
-        }
-
+       
     }
 }

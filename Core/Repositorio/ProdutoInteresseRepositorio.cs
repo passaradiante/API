@@ -36,12 +36,6 @@ namespace WebApi.Repositorio
                                              .Where(x => x.UsuarioAnunciante.Id == idAnunciante).ToList();
         }
 
-        //public bool AdicionarProduto(Produto produto)
-        //{
-        //    _context.Produtos.Add(produto);
-        //    return _context.SaveChanges() == 1 ? true : false;
-        //}
-
         public bool Lido(int id)
         {
             var interesse = _context.ProdutoInteresses.SingleOrDefault(x => x.Id == id);
