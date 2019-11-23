@@ -15,6 +15,10 @@ namespace WebApi.Models
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Servico> Servicos { get; set; }
         public DbSet<ProdutoInteresse> ProdutoInteresses { get; set; }
+        public DbSet<SituacaoProduto> SituacaoProduto { get; set; }
+        public DbSet<SituacaoMotivoCancelamento> SituacaoMotivoCancelamento { get; set; }
+        public DbSet<SituacaoStatus> SituacaoStatus { get; set; }
+
 
     }
 }

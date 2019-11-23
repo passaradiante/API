@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApi.Models;
 
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20191117130719_Situacao")]
+    partial class Situacao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,8 +239,6 @@ namespace WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("IniciadoTransacao");
-
                     b.Property<bool>("Lido");
 
                     b.Property<int?>("ProdutoId");
@@ -300,7 +300,7 @@ namespace WebApi.Migrations
 
                     b.Property<DateTime>("DataInicio");
 
-                    b.Property<DateTime?>("DataTermino");
+                    b.Property<DateTime>("DataTermino");
 
                     b.Property<int?>("MotivoCancelamentoId");
 

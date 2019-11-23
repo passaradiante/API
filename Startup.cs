@@ -75,12 +75,12 @@ namespace WebApi
             });
 
 
-
             #region
             services.AddTransient<ProdutoRepositorio, ProdutoRepositorio> ();
             services.AddTransient<CategoriaRepositorio, CategoriaRepositorio>();
-            //services.AddTransient<ServicoRepositorio, ServicoRepositorio>();
             services.AddTransient<ProdutoInteresseRepositorio, ProdutoInteresseRepositorio>();
+            services.AddTransient<SituacaoProdutoRepositorio, SituacaoProdutoRepositorio>();
+            services.AddTransient<SituacaoStatusRepositorio, SituacaoStatusRepositorio>();
             #endregion
         }
 

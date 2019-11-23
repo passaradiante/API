@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNet.OData;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,13 +18,25 @@ namespace WebApi.Controllers
         private UserManager<UsuarioIdentity> _userManager;
         private readonly ProdutoInteresseRepositorio interesserepositorio;
         private readonly ProdutoRepositorio produtorepositorio;
-        
+
 
         public ProdutoInteresseController(ProdutoInteresseRepositorio interesseRepositorio, ProdutoRepositorio produtoRepositorio, UserManager<UsuarioIdentity> userManager)
         {
             interesserepositorio = interesseRepositorio;
             _userManager = userManager;
             produtorepositorio = produtoRepositorio;
+        }
+
+        [HttpGet]
+        public IEnumerable<ProdutoInteresse> ProdutoInteresses()
+        {
+            return interesserepositorio.ObterProdutoInteresses();
+        }
+
+        [Route("interessePorId/{id}")]
+        public ProdutoInteresse ObterDadosInteressePorId(int id)
+        {
+            return interesserepositorio.InteressePorId(id);
         }
 
         [Route("{id}")]

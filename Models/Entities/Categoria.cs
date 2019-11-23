@@ -4,10 +4,8 @@ using WebApi.Repositorio;
 
 namespace WebApi.Models
 {
-    public class Categoria
+    public class Categoria : Base
     {
-
-        public int Id { get; set; }
         public string Nome { get; set; }
 
     }

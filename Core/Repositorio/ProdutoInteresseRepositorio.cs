@@ -11,8 +11,9 @@ namespace WebApi.Repositorio
 
         public ProdutoInteresseRepositorio(DatabaseContext context) => _context = context;
 
-        public IEnumerable<ProdutoInteresse> ObterProdutoInteresses() => _context.ProdutoInteresses;
+        public IEnumerable<ProdutoInteresse> ObterProdutoInteresses() => _context.ProdutoInteresses.Include(i => i.Produto).Include(i => i.UsuarioSolicitante).Include(i => i.UsuarioAnunciante);
 
+        public ProdutoInteresse InteressePorId(int id) => _context.ProdutoInteresses.Include(i => i.Produto).Include(i => i.UsuarioSolicitante).Include(i => i.UsuarioAnunciante).SingleOrDefault(x => x.Id == id);
 
         public bool AdicionarRelacao(ProdutoInteresse request)
         {
@@ -26,6 +27,11 @@ namespace WebApi.Repositorio
             _context.SaveChanges();
         }
 
+        public void AtualizarInteresse(ProdutoInteresse request)
+        {
+            _context.ProdutoInteresses.Update(request);
+            _context.SaveChanges();
+        }
         
 
         public IList<ProdutoInteresse> InteressePorAnunciante(string idAnunciante)
