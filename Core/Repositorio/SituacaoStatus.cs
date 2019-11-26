@@ -5,39 +5,39 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Repositorio
 {
-    public class SituacaoStatusRepositorio
+    public class SolicitacaoStatusRepositorio
     {
         private readonly DatabaseContext _context;
 
-        public SituacaoStatusRepositorio(DatabaseContext context) => _context = context;
+        public SolicitacaoStatusRepositorio(DatabaseContext context) => _context = context;
 
-        public IEnumerable<SituacaoStatus> ObterCategorias() => _context.SituacaoStatus;
+        public IEnumerable<SolicitacaoStatus> ObterCategorias() => _context.SolicitacaoStatus;
 
 
-        public void AdicionarSituacaoStatus(SituacaoStatus request)
+        public void AdicionarSolicitacaoStatus(SolicitacaoStatus request)
         {
-            _context.SituacaoStatus.Add(request);
+            _context.SolicitacaoStatus.Add(request);
             _context.SaveChanges();
         }
 
-        public void AtualizarSituacaoStatus(SituacaoStatus request)
+        public void AtualizarSolicitacaoStatus(SolicitacaoStatus request)
         {
             _context.Entry(request).State = EntityState.Modified;
             _context.SaveChanges();
         }
 
-        public void DeletarSituacaoStatus(SituacaoStatus request)
+        public void DeletarSolicitacaoStatus(SolicitacaoStatus request)
         {
-            _context.SituacaoStatus.Remove(request);
+            _context.SolicitacaoStatus.Remove(request);
             _context.SaveChanges();
         }
 
-        public SituacaoStatus StatusPorId(int id) => _context.SituacaoStatus.Find(id);
+        public SolicitacaoStatus StatusPorId(int id) => _context.SolicitacaoStatus.Find(id);
  
 
-        public bool ExisteSituacaoStatus(int id) => _context.SituacaoStatus.Any(e => e.Id == id) ? true : false;
+        public bool ExisteSolicitacaoStatus(int id) => _context.SolicitacaoStatus.Any(e => e.Id == id) ? true : false;
 
-        public bool ExisteSituacaoStatus(SituacaoStatus request) => _context.SituacaoStatus.Any(e => e.Nome == request.Nome) ? true : false;
+        public bool ExisteSolicitacaoStatus(SolicitacaoStatus request) => _context.SolicitacaoStatus.Any(e => e.Nome == request.Nome) ? true : false;
 
 
     }

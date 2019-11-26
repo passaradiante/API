@@ -79,8 +79,8 @@ namespace WebApi
             services.AddTransient<ProdutoRepositorio, ProdutoRepositorio> ();
             services.AddTransient<CategoriaRepositorio, CategoriaRepositorio>();
             services.AddTransient<ProdutoInteresseRepositorio, ProdutoInteresseRepositorio>();
-            services.AddTransient<SituacaoProdutoRepositorio, SituacaoProdutoRepositorio>();
-            services.AddTransient<SituacaoStatusRepositorio, SituacaoStatusRepositorio>();
+            services.AddTransient<SolicitacaoProdutoRepositorio, SolicitacaoProdutoRepositorio>();
+            services.AddTransient<SolicitacaoStatusRepositorio, SolicitacaoStatusRepositorio>();
             #endregion
         }
 

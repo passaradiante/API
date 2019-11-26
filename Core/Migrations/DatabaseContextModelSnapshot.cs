@@ -279,20 +279,7 @@ namespace WebApi.Migrations
                     b.ToTable("Servicos");
                 });
 
-            modelBuilder.Entity("WebApi.Models.SituacaoMotivoCancelamento", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Nome");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SituacaoMotivoCancelamento");
-                });
-
-            modelBuilder.Entity("WebApi.Models.SituacaoProduto", b =>
+            modelBuilder.Entity("WebApi.Models.SolicitacaoProduto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -301,6 +288,8 @@ namespace WebApi.Migrations
                     b.Property<DateTime>("DataInicio");
 
                     b.Property<DateTime?>("DataTermino");
+
+                    b.Property<bool>("Lido");
 
                     b.Property<int?>("MotivoCancelamentoId");
 
@@ -326,10 +315,10 @@ namespace WebApi.Migrations
 
                     b.HasIndex("UsuarioSolicitanteId");
 
-                    b.ToTable("SituacaoProduto");
+                    b.ToTable("SolicitacaoProduto");
                 });
 
-            modelBuilder.Entity("WebApi.Models.SituacaoStatus", b =>
+            modelBuilder.Entity("WebApi.Models.SolicitacaoStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -339,12 +328,31 @@ namespace WebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SituacaoStatus");
+                    b.ToTable("SolicitacaoStatus");
+                });
+
+            modelBuilder.Entity("WebApi.Models.TiposMotivoCancelamento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Nome");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TiposMotivoCancelamento");
                 });
 
             modelBuilder.Entity("WebApi.Models.UsuarioIdentity", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("Address");
+
+                    b.Property<string>("AddressComplement");
+
+                    b.Property<string>("AddressNumber");
 
                     b.Property<string>("FullName");
 
@@ -429,9 +437,9 @@ namespace WebApi.Migrations
                         .HasForeignKey("UsuarioId");
                 });
 
-            modelBuilder.Entity("WebApi.Models.SituacaoProduto", b =>
+            modelBuilder.Entity("WebApi.Models.SolicitacaoProduto", b =>
                 {
-                    b.HasOne("WebApi.Models.SituacaoMotivoCancelamento", "MotivoCancelamento")
+                    b.HasOne("WebApi.Models.TiposMotivoCancelamento", "MotivoCancelamento")
                         .WithMany()
                         .HasForeignKey("MotivoCancelamentoId");
 
@@ -439,7 +447,7 @@ namespace WebApi.Migrations
                         .WithMany()
                         .HasForeignKey("ProdutoId");
 
-                    b.HasOne("WebApi.Models.SituacaoStatus", "Status")
+                    b.HasOne("WebApi.Models.SolicitacaoStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId");
 

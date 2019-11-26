@@ -108,25 +108,7 @@ namespace WebApi.Controllers
             }
         }
 
-        //[HttpPut("{id}")]
-        //public async Task<JsonResult> Atualizar(int id, UsuarioIdentityModel request)
-        //{
-
-        //    var usuario = await
-
-        //    if (repositorio.ExisteProduto(id))
-        //    {
-        //        repositorio.AtualizarProduto(produto);
-        //        retornoJSON.Mensagem = "Produto atualizado!";
-        //        return Json(retornoJSON);
-        //    }
-        //    else
-        //    {
-        //        retornoJSON.Validado = false;
-        //        retornoJSON.Mensagem = "Produto não encontrado!";
-        //        return Json(retornoJSON);
-
-
+         //Metodo para editar o cadastro
 
         [HttpGet]
         [Authorize]
@@ -140,7 +122,10 @@ namespace WebApi.Controllers
                 user.FullName,
                 user.Email,
                 user.UserName,
-                user.Id
+                user.Id,
+                user.Address,
+                user.AddressComplement,
+                user.AddressNumber
             };
 
         }

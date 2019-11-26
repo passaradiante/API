@@ -5,43 +5,56 @@ using WebApi.Models;
 
 namespace WebApi.Repositorio
 {
-    public class SituacaoProdutoRepositorio
+    public class SolicitacaoProdutoRepositorio
      {
         private readonly DatabaseContext _context;
 
-        public SituacaoProdutoRepositorio(DatabaseContext context) => _context = context;
+        public SolicitacaoProdutoRepositorio(DatabaseContext context) => _context = context;
 
-        public IEnumerable<SituacaoProduto> ObterSituacaoProdutos() => _context.SituacaoProduto;
+        public IEnumerable<SolicitacaoProduto> ObterSolicitacaoProdutos() => _context.SolicitacaoProduto;
 
-        public bool AdicionarSituacaoProduto(SituacaoProduto situacao)
+        public bool AdicionarSolicitacaoProduto(SolicitacaoProduto situacao)
         {
-            _context.SituacaoProduto.Add(situacao);
+            _context.SolicitacaoProduto.Add(situacao);
             return _context.SaveChanges() == 1 ? true : false;
         }
 
-        public void AtualizarSituacaoProduto(SituacaoProduto situacao)
+        public void AtualizarSolicitacaoProduto(SolicitacaoProduto situacao)
         {
             _context.Entry(situacao).State = EntityState.Modified;
             _context.SaveChanges();
         }
 
-        //public SituacaoProduto SituacaoPorId(int id) {
-
-        //  return  _context.SituacaoProduto
-        //                                .Include(i => i.Produto)
-        //                                .Include(i => i.UsuarioAnunciante)
-        //                                .Include(i => i.UsuarioSolicitante)
-        //                                .Include
-        //                                .SingleOrDefault(x => x.Id == id);
-
-        //}
-
-        public bool DeletarProduto(SituacaoProduto situacao)
+        public bool DeletarProduto(SolicitacaoProduto situacao)
         {
-            _context.SituacaoProduto.Remove(situacao);
+            _context.SolicitacaoProduto.Remove(situacao);
           return _context.SaveChanges() == 1 ? true : false;
         }
 
+        public bool Lido(int id)
+        {
+            var situacao = _context.SolicitacaoProduto.SingleOrDefault(x => x.Id == id);
+            situacao.Lido = true;
+            _context.Update(situacao);
+            return _context.SaveChanges() == 1 ? true : false;
+        }
+
+        public IList<SolicitacaoProduto> SolicitacoesPorAnunciante(string idAnunciante)
+        {
+            return _context.SolicitacaoProduto.Include(i => i.Produto)
+                                              .Include(i => i.UsuarioSolicitante)
+                                              .Include(i => i.UsuarioAnunciante)
+                                              .Where(x => x.UsuarioAnunciante.Id == idAnunciante).ToList();
+        }
+
+        public IList<SolicitacaoProduto> SolicitacoesPorSolicitante(string idSolicitante)
+        {
+            return _context.SolicitacaoProduto.Include(i => i.Produto)
+                                              .Include(i => i.UsuarioSolicitante)
+                                              .Include(i => i.UsuarioAnunciante)
+                                              .Include(i => i.Status)
+                                              .Where(x => x.UsuarioSolicitante.Id == idSolicitante).ToList();
+        }
     }
 
 }

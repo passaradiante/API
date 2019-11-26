@@ -49,6 +49,11 @@ namespace WebApi.Repositorio
             _context.Update(interesse);
            return _context.SaveChanges() == 1 ? true : false;
         }
+
+        public bool UsuarioJaSolicitou(int idProduto, string idUsuario)
+        {
+            return _context.ProdutoInteresses.Any(i => i.Produto.Id == idProduto && i.UsuarioSolicitante.Id == idUsuario);
+        }
     }
 
 }

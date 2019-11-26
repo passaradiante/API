@@ -50,6 +50,7 @@ namespace WebApi.Controllers
         [Route("interesse")]
         public async Task<JsonResult> InteresseProduto(ProdutoInteresseModel request)
         {
+
             #region Registrando interesse
             ProdutoInteresse interesse = new ProdutoInteresse();
             var produto = produtorepositorio.ProdutoPorId(request.ProdutoID);
@@ -75,6 +76,25 @@ namespace WebApi.Controllers
 
         }
 
+        [Route("usuarioSolicitou/{idProduto}/{idUsuario}")]
+        public JsonResult VerificarSeUsuarioSolicitou(int idProduto, string idUsuario)
+        {
+            var result = interesserepositorio.UsuarioJaSolicitou(idProduto, idUsuario);
+
+            if (result)
+            {
+                retornoJSON.Mensagem = "Você já solicitou, aguarde!";
+                return Json(retornoJSON);
+            }
+            else
+            {
+                retornoJSON.Validado = false;
+                retornoJSON.Mensagem = "Pode solicitar, minha joia!";
+                return Json(retornoJSON);
+            }
+
+        }
+
         [HttpPost]
         public JsonResult InteresseLido(ProdutoInteresseLido request)
         {
@@ -91,5 +111,6 @@ namespace WebApi.Controllers
                 return Json(retornoJSON);
             }
         }
+        
     }
 }
