@@ -6,9 +6,8 @@ namespace WebApi.Models
     {
 
         public string FullName { get; set; }
+        public string City { get; set; }
         public string Address { get; set; }
-        public string AddressNumber { get; set; }
-        public string AddressComplement { get; set; }
-
+        public int AddressNumber { get; set; }
     }
 }

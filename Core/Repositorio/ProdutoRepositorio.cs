@@ -6,7 +6,7 @@ using WebApi.Models;
 namespace WebApi.Repositorio
 {
     public class ProdutoRepositorio
-     {
+    {
         private readonly DatabaseContext _context;
 
         public ProdutoRepositorio(DatabaseContext context) => _context = context;
@@ -29,11 +29,17 @@ namespace WebApi.Repositorio
 
         public void DeletarProduto(Produto produto)
         {
+
             _context.Produtos.Remove(produto);
             _context.SaveChanges();
         }
 
         public bool ExisteProduto(int id) => _context.Produtos.Any(e => e.Id == id) ? true : false;
+
+        public bool VerificarSeEhProdutoDoAnunciante(string idUsuario, int idProduto)
+        {
+            return _context.Produtos.Any(i => i.Id == idProduto && i.Usuario.Id == idUsuario) ? true: false;
+        }
 
     }
 

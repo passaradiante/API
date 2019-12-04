@@ -32,7 +32,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [EnableQuery()]
+        [EnableQuery]
         public IEnumerable<Produto> Produtos() => repositorio.ObterProdutos();
 
         [HttpPost]
@@ -67,10 +67,22 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public JsonResult Atualizar(int id, Produto produto)
+        public async Task<JsonResult> Atualizar(int id, ProdutoModel request)
         {
 
-            produto.Id = id;
+            request.Id = id;
+
+            #region Produto editado
+            Produto produto = new Produto();
+            produto.Id = request.Id;
+            produto.Nome = request.Nome;
+            produto.Descricao = request.Descricao;
+            produto.DataRegistro = request.DataRegistro;
+            produto.Quantidade = request.Quantidade;
+            produto.Valor = request.Valor;
+            produto.Usuario = await _userManager.FindByIdAsync(request.UsuarioID);
+            produto.Categoria = categrepositorio.CategoriaoPorId(request.CategoriaID);
+            #endregion
 
             if (repositorio.ExisteProduto(id))
             {
@@ -87,13 +99,13 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public JsonResult DeletarProduto(int id)
+        public JsonResult DeletarProduto(int id) 
         {
             var produto = repositorio.ProdutoPorId(id);
             if (produto != null)
             {
                 repositorio.DeletarProduto(produto);
-                retornoJSON.Mensagem = "Produto deletado!";
+                retornoJSON.Mensagem = "Anúncio deletado!";
                 return Json(retornoJSON);
             }
             else
@@ -104,6 +116,21 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("produtoDoAnunciante/{idProduto}/{idUsuario}")]
+        public JsonResult EhProdutoDoAnuncinte(int idProduto, string idUsuario)
+        {
+            var result = repositorio.VerificarSeEhProdutoDoAnunciante(idUsuario, idProduto);
+            if (result)
+            {
+                return Json(retornoJSON);
+            }
+            else
+            {
+                retornoJSON.Validado = false;
+                return Json(retornoJSON);
+            }
+        }
        
     }
 }

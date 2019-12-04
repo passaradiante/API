@@ -36,13 +36,17 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("cadastro")]
-        public async Task<Object> Cadastrar(UsuarioIdentityModel request)
+        public async Task<JsonResult> Cadastrar(UsuarioIdentityModel request)
         {
             var novoUsuario = new UsuarioIdentity()
             {
+                Id = string.Empty,
                 UserName = request.UserName,
                 Email = request.Email,
-                FullName = request.FullName
+                FullName = request.FullName,
+                City = request.City,
+                Address = request.Address,
+                AddressNumber = request.AddressNumber
             };
 
             #region Validacao
@@ -72,6 +76,33 @@ namespace WebApi.Controllers
             {
                 throw ex;
             }
+        }
+
+        [HttpPut]
+        public async Task<JsonResult> AtualizarCadastro(UsuarioIdentityModel request)
+        {
+            UsuarioIdentity dadosUsuario = await _userManager.FindByIdAsync(request.Id);
+
+            dadosUsuario.City = request.City;
+            dadosUsuario.Address = request.Address;
+            dadosUsuario.AddressNumber = request.AddressNumber;
+
+            try
+            {
+                var resultadoTransacao = await _userManager.UpdateAsync(dadosUsuario);
+                if (resultadoTransacao.Succeeded)
+                {
+                    retornoJSON.Validado = true;
+                    retornoJSON.Mensagem = "Dados atualizados!";
+                    return Json(retornoJSON);
+                }
+                return Json(resultadoTransacao);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
         [HttpPost]
@@ -108,7 +139,7 @@ namespace WebApi.Controllers
             }
         }
 
-         //Metodo para editar o cadastro
+         
 
         [HttpGet]
         [Authorize]
@@ -123,8 +154,8 @@ namespace WebApi.Controllers
                 user.Email,
                 user.UserName,
                 user.Id,
+                user.City,
                 user.Address,
-                user.AddressComplement,
                 user.AddressNumber
             };
 

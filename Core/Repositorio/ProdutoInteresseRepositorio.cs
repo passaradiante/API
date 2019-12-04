@@ -21,7 +21,7 @@ namespace WebApi.Repositorio
             return _context.SaveChanges() == 1 ? true : false;
         }
 
-        public void DeletarRelacaoa(ProdutoInteresse request)
+        public void DeletarRelacao(ProdutoInteresse request)
         {
             _context.ProdutoInteresses.Remove(request);
             _context.SaveChanges();
