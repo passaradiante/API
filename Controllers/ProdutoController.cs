@@ -35,6 +35,9 @@ namespace WebApi.Controllers
         [EnableQuery]
         public IEnumerable<Produto> Produtos() => repositorio.ObterProdutos();
 
+        [Route("produtosPorUsuario{idUsuario}")]
+        public IEnumerable<Produto> ObterProdutosPorUsuario(string idUsuario) => repositorio.ProdutoPorUsuario(idUsuario);
+
         [HttpPost]
         [Route("cadastro")]
         public async Task<JsonResult> Cadastrar(ProdutoModel request)
@@ -66,11 +69,9 @@ namespace WebApi.Controllers
             }            
         }
 
-        [HttpPut("{id}")]
-        public async Task<JsonResult> Atualizar(int id, ProdutoModel request)
+        [HttpPut]
+        public async Task<JsonResult> Atualizar(ProdutoModel request)
         {
-
-            request.Id = id;
 
             #region Produto editado
             Produto produto = new Produto();
@@ -84,7 +85,7 @@ namespace WebApi.Controllers
             produto.Categoria = categrepositorio.CategoriaoPorId(request.CategoriaID);
             #endregion
 
-            if (repositorio.ExisteProduto(id))
+            if (repositorio.ExisteProduto(request.Id))
             {
                 repositorio.AtualizarProduto(produto);
                 retornoJSON.Mensagem = "Produto atualizado!";

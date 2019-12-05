@@ -27,6 +27,8 @@ namespace WebApi.Repositorio
 
         public Produto ProdutoPorId(int id) => _context.Produtos.Include(i => i.Usuario).SingleOrDefault(x => x.Id == id);
 
+        public IEnumerable<Produto> ProdutoPorUsuario(string idUsuario) => _context.Produtos.Include(i => i.Usuario).Include(i => i.Categoria).Where(w => w.Usuario.Id == idUsuario);
+
         public void DeletarProduto(Produto produto)
         {
 

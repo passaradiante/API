@@ -39,7 +39,7 @@ namespace WebApi
             });
 
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DevConnection"))); ;
             services.AddOData();
             services.AddCors();
             services.AddDefaultIdentity<UsuarioIdentity>()
