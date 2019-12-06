@@ -25,13 +25,19 @@ namespace WebApi.Repositorio
             _context.SaveChanges();
         }
 
-        public Produto ProdutoPorId(int id) => _context.Produtos.Include(i => i.Usuario).SingleOrDefault(x => x.Id == id);
+        public Produto ProdutoPorId(int id) =>_context.Produtos.Include(i => i.Usuario).SingleOrDefault(x => x.Id == id);
 
         public IEnumerable<Produto> ProdutoPorUsuario(string idUsuario) => _context.Produtos.Include(i => i.Usuario).Include(i => i.Categoria).Where(w => w.Usuario.Id == idUsuario);
 
         public void DeletarProduto(Produto produto)
         {
+            if (_context.ProdutoInteresses.Any(a => a.Produto.Id == produto.Id))
+                _context.ProdutoInteresses.Remove(_context.ProdutoInteresses.SingleOrDefault(s => s.Produto.Id == produto.Id));
 
+            if (_context.SolicitacaoProduto.Any(a => a.Produto.Id == produto.Id))
+                _context.SolicitacaoProduto.Remove(_context.SolicitacaoProduto.SingleOrDefault(s => s.Produto.Id == produto.Id));
+
+            
             _context.Produtos.Remove(produto);
             _context.SaveChanges();
         }

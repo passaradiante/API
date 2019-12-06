@@ -66,17 +66,27 @@ namespace WebApi.Controllers
 
         }
 
-
-
-        [Route("obterSolicitacoes")]
-        public IList<SolicitacaoProduto> ObterSolicitacoesPorTipoUsuario(SolicitacaoPedidoModel request)
+        [Route("obterSolicitacoes{idDoUsuario}")]
+        public IList<SolicitacaoProduto> ObterSolicitacoesPorTipoUsuario(string idDoUsuario)
         {
-            if (request.Anunciante)
-                return solicitacaoProdutorepositorio.SolicitacoesPorAnunciante(request.Id);
-            else
-                return solicitacaoProdutorepositorio.SolicitacoesPorSolicitante(request.Id);
-            
+                return solicitacaoProdutorepositorio.SolicitacoesPorSolicitante(idDoUsuario);    
         }
 
+        [Route("obterSolicitacaoPorId{idSolicitacao}")]
+        public SolicitacaoProduto ObterSolicitacaoId(int idSolicitacao)
+        {
+            return solicitacaoProdutorepositorio.ObterSolicitacaoPorId(idSolicitacao);
+        }
+
+        [HttpPost]
+        [Route("marcarComoLida{idSolicitacao}")]
+        public JsonResult MarcarComoLida(int idSolicitacao)
+        {
+            if (solicitacaoProdutorepositorio.Lida(idSolicitacao))
+                return Json(retornoJSON);
+            else
+                return Json(retornoJSON.Validado = false);
+
+        }
     }
 }

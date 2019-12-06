@@ -352,6 +352,8 @@ namespace WebApi.Migrations
 
                     b.Property<int>("AddressNumber");
 
+                    b.Property<int>("AddressNumber2");
+
                     b.Property<string>("City");
 
                     b.Property<string>("FullName");

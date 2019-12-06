@@ -13,6 +13,8 @@ namespace WebApi.Repositorio
 
         public IEnumerable<SolicitacaoProduto> ObterSolicitacaoProdutos() => _context.SolicitacaoProduto;
 
+        public SolicitacaoProduto ObterSolicitacaoPorId(int idSolicitacao) => _context.SolicitacaoProduto.Include(i => i.UsuarioAnunciante).Include(i => i.Produto).SingleOrDefault(s => s.Id == idSolicitacao);
+
         public bool AdicionarSolicitacaoProduto(SolicitacaoProduto situacao)
         {
             _context.SolicitacaoProduto.Add(situacao);
@@ -31,7 +33,7 @@ namespace WebApi.Repositorio
           return _context.SaveChanges() == 1 ? true : false;
         }
 
-        public bool Lido(int id)
+        public bool Lida(int id)
         {
             var situacao = _context.SolicitacaoProduto.SingleOrDefault(x => x.Id == id);
             situacao.Lido = true;

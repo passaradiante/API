@@ -58,7 +58,7 @@ namespace WebApi.Controllers
             var result = repositorio.AdicionarProduto(produto);
             if (result)
             {
-                retornoJSON.Mensagem = "Produto cadastrado!";
+                retornoJSON.Mensagem = "Anúncio cadastrado!";
                 return Json(retornoJSON);
             }
             else
@@ -88,7 +88,7 @@ namespace WebApi.Controllers
             if (repositorio.ExisteProduto(request.Id))
             {
                 repositorio.AtualizarProduto(produto);
-                retornoJSON.Mensagem = "Produto atualizado!";
+                retornoJSON.Mensagem = "Anúncio atualizado!";
                 return Json(retornoJSON);
             }
             else

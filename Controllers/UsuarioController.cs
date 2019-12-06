@@ -40,7 +40,6 @@ namespace WebApi.Controllers
         {
             var novoUsuario = new UsuarioIdentity()
             {
-                Id = string.Empty,
                 UserName = request.UserName,
                 Email = request.Email,
                 FullName = request.FullName,
